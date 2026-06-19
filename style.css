@@ -1,0 +1,95 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(-45deg, #fee9f7, #e8f5fe, #fef2e8, #f0ffe8);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    font-family: 'Nunito', sans-serif;
+    overflow: hidden;
+    position: relative;
+    cursor: none; 
+}
+
+/* --- Fixed Heart Cursor for Index --- */
+.cursor {
+    width: 30px;
+    height: 30px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%); 
+}
+
+.cursor svg {
+    width: 100%;
+    height: 100%;
+    fill: #ff69b4 !important; 
+    filter: drop-shadow(0 0 6px rgba(255, 105, 180, 0.6));
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* --- Content Layout --- */
+.container {
+    text-align: center;
+    z-index: 1;
+}
+
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-style: italic;
+    font-size: 3.8rem;
+    color: #ff69b4;
+    text-shadow: 0 4px 15px rgba(255, 105, 180, 0.25);
+    margin-bottom: 2rem;
+    opacity: 0; 
+}
+
+.greeting {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: #8a2be2;
+    margin-bottom: 3rem;
+    min-height: 2em;
+    letter-spacing: 0.5px;
+}
+
+/* --- Main Call-to-Action Button --- */
+.cta-button {
+    padding: 1rem 2rem;
+    font-size: 1.15rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    background: linear-gradient(45deg, #ff69b4, #ff99cc);
+    border: none;
+    border-radius: 50px;
+    color: white;
+    box-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
+    opacity: 0; 
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.floating {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 0;
+}

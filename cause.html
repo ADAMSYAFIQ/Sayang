@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Sayang ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght=500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="cause.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+</head>
+<body>
+
+    <div class="custom-cursor" style="pointer-events: none; position: fixed; z-index: 10005;">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="pointer-events: none; display: block; width: 100%; height: 100%;">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.5 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+    </div>
+
+    <div class="music-player">
+        <button id="music-toggle" aria-label="Toggle Music">🎵 Play Song</button>
+        <audio id="bg-music" src="./assets/music/euclid-piano.mp3" loop></audio>
+    </div>
+
+    <div class="page-container">
+        <header class="section-header">
+            <h1>Why You Mean So Much to Me 💕</h1>
+            <p class="subtitle">A few small reminders of why you're so special...</p>
+        </header>
+
+        <main class="card-display-deck">
+            <div class="reason-card" id="active-card">
+                <div class="card-inner-frame">
+                    <div class="emoji-header-container">
+                        <span class="card-emoji" id="card-emoji">✨</span>
+                    </div>
+                    <p class="reason-text" id="reason-text">Click the button below to reveal the reasons... ❤️</p>
+                </div>
+            </div>
+
+            <button class="shuffle-button" id="shuffle-button">Click to Reveal ✨</button>
+            <p class="reason-counter" id="card-counter">Reason <span id="current-card-num">0</span> of 3</p>
+        </main>
+    </div>
+
+    <script src="cause.js"></script>
+</body>
+</html>

@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Storylane ✨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght=0,600;0,700;1,400&family=Nunito:wght@500;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f3e5f5 0%, #fae1e6 100%);
+            font-family: 'Nunito', sans-serif;
+            overflow-x: hidden;
+            padding: 5.5rem 1rem 4rem 1rem; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: none; 
+            opacity: 0; /* Handled smoothly by GSAP entrance */
+            position: relative;
+        }
+
+        /* --- Floating Background Container --- */
+        .bg-animation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .floating-element {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0.6;
+            font-size: 1.2rem;
+            user-select: none;
+        }
+
+        /* --- Fixed Top Music Bar (Mobile Safe) --- */
+        .music-player {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 10000;
+        }
+
+        #music-toggle {
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 2px solid #ff69b4;
+            border-radius: 30px;
+            color: #ff69b4;
+            font-family: 'Nunito', sans-serif;
+            font-weight: bold;
+            font-size: 0.85rem;
+            cursor: none;
+            box-shadow: 0 4px 12px rgba(255, 105, 180, 0.15);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #music-toggle.playing {
+            background: linear-gradient(45deg, #ff69b4, #da70d6);
+            color: white;
+            border-color: transparent;
+        }
+
+        /* --- Fixed Custom Heart Cursor --- */
+        .custom-cursor {
+            width: 30px;
+            height: 30px;
+            position: fixed;
+            top: 0;     
+            left: 0;    
+            pointer-events: none;
+            z-index: 10005;
+            transform: translate(-50%, -50%);
+        }
+
+        .custom-cursor svg {
+            width: 100%;
+            height: 100%;
+            fill: #ff69b4 !important;
+            filter: drop-shadow(0 0 6px rgba(255, 105, 180, 0.7));
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3rem;
+            z-index: 10;
+            position: relative;
+        }
+
+        .page-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-style: italic;
+            color: #ff69b4;
+            font-size: 3.2rem;
+            text-align: center;
+            text-shadow: 0 4px 12px rgba(255, 105, 180, 0.2);
+        }
+
+        /* --- Memory Cards Straight Line Grid Layout --- */
+        .memory-container {
+            display: flex;
+            flex-direction: row;  
+            flex-wrap: nowrap;     /* Forces cards to stay on one line on desktop */
+            gap: 2rem;          
+            width: 100%;
+            max-width: 1150px;     /* Expanded layout boundary to accommodate 3 cards comfortably */
+            justify-content: center; 
+            margin-bottom: 1rem;   
+        }
+
+        .memory-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(255, 182, 193, 0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            transition: transform 0.3s ease;
+            flex: 1;               /* Equal widths across the line */
+            min-width: 280px;      
+            max-width: 360px; 
+        }
+
+        .memory-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .memory-img {
+            width: 100%;
+            height: auto;
+            max-height: 450px;
+            object-fit: contain;
+            border-radius: 12px;
+            background-color: transparent;
+        }
+
+        .memory-date {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: #db70db;
+            font-size: 1.35rem;
+        }
+
+        .memory-caption {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 500;
+            font-size: 0.98rem;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        /* --- 10 Balloon Mini Game System --- */
+        .game-wrapper {
+            width: 100%;
+            max-width: 750px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.05);
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        .game-instruction {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: #db70db;
+            font-size: 1.6rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .game-counter {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            color: #ff69b4;
+            font-size: 1.05rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2rem;
+        }
+
+        .balloon-yard {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            row-gap: 3.5rem;
+            padding: 1rem 0 3rem 0;
+            width: 100%;
+        }
+
+        .balloon {
+            width: 55px;
+            height: 68px;
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+            position: relative;
+            cursor: none; 
+            animation: floatSway 4s infinite ease-in-out alternate;
+            box-shadow: inset -6px -8px 0 rgba(0,0,0,0.08), 0 8px 15px rgba(0,0,0,0.05);
+        }
+
+        .balloon::before {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 23px;
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 6px solid;
+            border-bottom-color: inherit; 
+        }
+
+        .balloon-string {
+            width: 1.5px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.12);
+            position: absolute;
+            bottom: -40px;
+            left: 27px;
+        }
+
+        @keyframes floatSway {
+            0% { transform: translateY(0) rotate(-4deg); }
+            100% { transform: translateY(-18px) rotate(4deg); }
+        }
+
+        .pop-particle {
+            position: fixed;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* --- Heartfelt Letter Section --- */
+        .letter-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 3rem 2rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 182, 193, 0.6);
+            width: 100%;
+            max-width: 750px;
+            text-align: left;
+            display: none; 
+            opacity: 0;
+            transform: scale(0.9);
+            margin-bottom: 2rem;
+        }
+
+        .letter-title {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-style: italic;
+            color: #ff69b4;
+            font-size: 2.2rem;
+            margin-bottom: 1.8rem;
+            text-align: center;
+        }
+
+        .letter-text {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 500;
+            font-size: 1.1rem;
+            line-height: 1.9;
+            color: #444;
+            white-space: pre-line;
+        }
+
+        /* --- Responsive Viewports --- */
+        @media (max-width: 968px) {
+            .memory-container {
+                flex-wrap: wrap; /* Gracefully wraps on smaller tablets/mobiles so it doesn't break overflow boundaries */
+                justify-content: center;
+            }
+            .memory-card {
+                flex: 1 1 300px;
+                max-width: 380px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 4.5rem 1rem 3rem 1rem; }
+            .music-player { top: 10px; right: 10px; }
+            #music-toggle { padding: 8px 14px; font-size: 0.78rem; }
+            .page-title { font-size: 2.2rem; }
+            .letter-card { padding: 2rem 1.5rem; }
+            .balloon-yard { gap: 0.8rem; }
+            .balloon { width: 46px; height: 58px; }
+            .balloon::before { left: 18px; }
+            .balloon-string { left: 22px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Floating Background Effect layer -->
+    <div class="bg-animation-container" id="bg-assets"></div>
+
+    <div class="custom-cursor">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.5 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+    </div>
+
+    <div class="music-player">
+        <button id="music-toggle" aria-label="Toggle Music">🎵 Play Song</button>
+        <audio id="bg-music" src="./assets/music/euclid-piano.mp3" loop></audio>
+    </div>
+
+    <div class="container">
+        <h1 class="page-title">Our Storylane 💫</h1>
+
+        <div class="memory-container">
+            <div class="memory-card">
+                <img src="./assets/images/d1.jpg" alt="Our Early Online Days" class="memory-img">
+                <div class="memory-date">Where It All Began ✨</div>
+                <div class="memory-caption">Looking back at our earliest days together online, I still smile thinking about how quickly you became my favorite person. Everything started right here. ❤️</div>
+            </div>
+
+            <div class="memory-card">
+                <img src="./assets/images/d2.jpg" alt="Our Raya Memories" class="memory-img">
+                <div class="memory-date">Our First Raya Together 🌙✨</div>
+                <div class="memory-caption">Sharing our Raya photos with each other across the distance made the celebration feel so much closer. Seeing you look so beautiful completely made my day. 🥰💕</div>
+            </div>
+
+            <div class="memory-card">
+                <img src="./assets/images/d3.jpeg" alt="Your Radiant Smile" class="memory-img">
+                <div class="memory-date">Your Precious Smile 🥰</div>
+                <div class="memory-caption">Of all the beautiful pictures we share, your simple, radiant smile is still my absolute favorite view. Just seeing it makes every single mile between us completely disappear. 🌸💖</div>
+            </div>
+        </div>
+
+        <div class="game-wrapper">
+            <p class="game-instruction">🎈 Pop the birthday balloons to unlock your final letter! 🎈</p>
+            <p class="game-counter">Balloons Popped: <span id="pop-count">0</span> / 10</p>
+            <div class="balloon-yard" id="balloon-yard"></div>
+        </div>
+
+        <div class="letter-card">
+            <h2 class="letter-title">To My Dearest Sayang... 💖</h2>
+            <div class="letter-text">Happy Birthday, Sayang.
+
+Happy Birthday, Sayang.
+
+I know this year hasn't been easy for you.
+
+I've seen how much responsibility you carry, how much stress you go through, and how often you put other people's needs before your own. There were days when you were tired, overwhelmed, frustrated, and probably wished you could just rest from everything for a while.
+
+Even so, you kept going.
+
+I don't think you always realize how strong you are. Not because you never struggle, but because you continue moving forward even when life feels unfair and exhausting.
+
+One thing I've always admired about you is how much you care about the people who are important to you. I've seen how protective you can be and how much love you have for the people closest to your heart. The way you talk about them, worry about them, and stand by them shows a side of you that I really respect. Even when you're going through your own struggles, you still find room in your heart to care for others.
+
+Thank you for letting me be part of your life. Thank you for the conversations, the calls, the laughter, the teasing, the photos you send, and all the little moments we've shared together. Some of my happiest memories are connected to you, even the simple ones.
+
+I know I don't always say the right things, and I know there are times when I worry too much. But one thing I hope you always know is that I genuinely care about you and your happiness.
+
+For your birthday, I don't wish for anything grand. I just hope this year is a little kinder to you. I hope you find more peace, more happiness, and more reasons to smile. I hope you can have more days where you don't have to carry everything by yourself and can simply enjoy being yourself.
+
+And before I end this message, there's one more thing I want to say.
+
+If there were times when I bothered you, worried too much, or made things harder for you, I'm sorry. I know I can overthink sometimes, but it's only because you mean a lot to me.
+
+And no matter what happens in the future, I'll always be grateful that our paths crossed and that I got the chance to know you.
+
+Thank you for being you.
+
+Happy Birthday, Sayang. ❤️
+</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // SMOOTH PAGE ENTRANCE
+            gsap.fromTo('body', { opacity: 0 }, { opacity: 1, duration: 1, ease: "power2.out" });
+
+            // BACKGROUND FLOAT ENGINE (Hearts & Stars setup)
+            const bgContainer = document.getElementById('bg-assets');
+            const assetsList = ['❤️', '✨', '🌸', '✨', '💖', '☁️'];
+            
+            function createFloatingParticle() {
+                if (!bgContainer) return;
+                const element = document.createElement('div');
+                element.className = 'floating-element';
+                element.textContent = assetsList[Math.floor(Math.random() * assetsList.length)];
+                
+                const startX = Math.random() * window.innerWidth;
+                const size = Math.random() * 1.2 + 0.6;
+                
+                element.style.left = startX + 'px';
+                element.style.top = (window.innerHeight + 50) + 'px';
+                element.style.fontSize = size + 'rem';
+                
+                bgContainer.appendChild(element);
+                
+                const duration = Math.random() * 6 + 6;
+                const swayX = Math.random() * 120 - 60;
+                
+                gsap.to(element, {
+                    y: -(window.innerHeight + 150),
+                    x: `+=${swayX}`,
+                    rotation: Math.random() * 360,
+                    duration: duration,
+                    ease: "none",
+                    onComplete: () => {
+                        element.remove();
+                    }
+                });
+            }
+
+            // Spawn dynamic ambient particles regularly
+            for(let i=0; i<15; i++) {
+                setTimeout(() => {
+                    if(document.visibilityState === 'visible') createFloatingParticle();
+                }, Math.random() * 6000);
+            }
+            setInterval(() => {
+                if(document.visibilityState === 'visible') createFloatingParticle();
+            }, 750);
+
+            // CUSTOM CURSOR LOGIC
+            const musicToggle = document.getElementById('music-toggle');
+            const bgMusic = document.getElementById('bg-music');
+            const cursor = document.querySelector('.custom-cursor');
+
+            document.addEventListener('mousemove', (e) => {
+                if (cursor) {
+                    gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: 0.1 });
+                }
+            });
+
+            document.addEventListener('mousedown', () => {
+                if (cursor) gsap.to(cursor, { scale: 0.7, duration: 0.1 });
+            });
+            document.addEventListener('mouseup', () => {
+                if (cursor) gsap.to(cursor, { scale: 1.2, duration: 0.1, yoyo: true, repeat: 1 });
+            });
+
+            // MUSIC SYNC PERSISTENCE
+            if (musicToggle && bgMusic) {
+                bgMusic.volume = 0.35;
+                const musicState = localStorage.getItem('musicPlaying');
+                const savedTime = localStorage.getItem('musicTime');
+
+                if (savedTime) bgMusic.currentTime = parseFloat(savedTime);
+                if (musicState === 'true') {
+                    bgMusic.play().then(() => {
+                        musicToggle.textContent = "⏸️ Pause Song";
+                        musicToggle.classList.add('playing');
+                    }).catch(err => console.log("Audio waiting for system focus interaction link:", err));
+                }
+
+                setInterval(() => {
+                    if (!bgMusic.paused) localStorage.setItem('musicTime', bgMusic.currentTime);
+                }, 1000);
+
+                musicToggle.addEventListener('click', () => {
+                    if (bgMusic.paused) {
+                        bgMusic.play().then(() => {
+                            musicToggle.textContent = "⏸️ Pause Song";
+                            musicToggle.classList.add('playing');
+                            localStorage.setItem('musicPlaying', 'true');
+                        });
+                    } else {
+                        bgMusic.pause();
+                        musicToggle.textContent = "🎵 Play Song";
+                        musicToggle.classList.remove('playing');
+                        localStorage.setItem('musicPlaying', 'false');
+                    }
+                });
+            }
+
+            // MEMORY ENTRANCE CARDS
+            gsap.from('.memory-card', {
+                opacity: 0,
+                y: 50,
+                stagger: 0.2,
+                duration: 0.8,
+                ease: "power2.out"
+            });
+
+            document.querySelectorAll('.memory-card').forEach((card, index) => {
+                gsap.to(card, {
+                    y: '+=8',
+                    rotation: index % 2 === 0 ? '+=1' : '-=1',
+                    duration: 3.5 + (index * 0.5),
+                    ease: "sine.inOut",
+                    yoyo: true,
+                    repeat: -1
+                });
+            });
+
+            gsap.to('.game-wrapper', {
+                scale: 1.015,
+                duration: 2.5,
+                ease: "sine.inOut",
+                yoyo: true,
+                repeat: -1
+            });
+
+            // GAME MECHANICS (10 BALLOONS)
+            const totalBalloons = 10;
+            let poppedCount = 0;
+            const balloonYard = document.getElementById('balloon-yard');
+            const popCountLabel = document.getElementById('pop-count');
+            const gameWrapper = document.querySelector('.game-wrapper');
+            const letterCard = document.querySelector('.letter-card');
+
+            const balloonColors = [
+                '#ff69b4', '#ff85a2', '#ff99cc', '#ffb6c1', 
+                '#db70db', '#da70d6', '#ba55d3', '#c71585', 
+                '#ff7396', '#ea6286', '#e88da4', '#f06292'
+            ];
+
+            for (let i = 0; i < totalBalloons; i++) {
+                const balloon = document.createElement('div');
+                balloon.className = 'balloon';
+                
+                const randomColor = balloonColors[Math.floor(Math.random() * balloonColors.length)];
+                balloon.style.backgroundColor = randomColor;
+                balloon.style.borderBottomColor = randomColor; 
+                balloon.style.animationDelay = (Math.random() * 1.5) + 's';
+                balloon.style.animationDuration = (Math.random() * 2 + 3) + 's'; 
+
+                const string = document.createElement('div');
+                string.className = 'balloon-string';
+                balloon.appendChild(string);
+
+                balloon.addEventListener('click', (e) => {
+                    triggerConfettiExplosion(e.clientX, e.clientY, randomColor);
+
+                    gsap.to(balloon, {
+                        scale: 1.4,
+                        opacity: 0,
+                        duration: 0.1,
+                        ease: "power1.out",
+                        onComplete: () => {
+                            balloon.remove();
+                            poppedCount++;
+                            popCountLabel.textContent = poppedCount;
+                            checkVictoryCondition();
+                        }
+                    });
+                });
+
+                balloonYard.appendChild(balloon);
+            }
+
+            function triggerConfettiExplosion(x, y, color) {
+                const particleCount = 18;
+                for (let i = 0; i < particleCount; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'pop-particle';
+                    particle.style.backgroundColor = color;
+                    particle.style.left = x + 'px';
+                    particle.style.top = y + 'px';
+                    document.body.appendChild(particle);
+
+                    const angle = Math.random() * Math.PI * 2;
+                    const blastRadius = Math.random() * 90 + 40;
+
+                    gsap.to(particle, {
+                        x: Math.cos(angle) * blastRadius,
+                        y: Math.sin(angle) * blastRadius + 60, 
+                        opacity: 0,
+                        scale: 0.2,
+                        duration: Math.random() * 0.5 + 0.4,
+                        ease: "power2.out",
+                        onComplete: () => particle.remove()
+                    });
+                }
+            }
+
+            function checkVictoryCondition() {
+                if (poppedCount === totalBalloons) {
+                    gsap.to(gameWrapper, {
+                        opacity: 0,
+                        y: -20,
+                        duration: 0.5,
+                        onComplete: () => {
+                            gameWrapper.remove();
+                            letterCard.style.display = 'block';
+                            gsap.to(letterCard, {
+                                opacity: 1,
+                                scale: 1,
+                                duration: 0.8,
+                                ease: "back.out(1.1)",
+                                onComplete: () => {
+                                    window.scrollTo({
+                                        top: letterCard.offsetTop - 80,
+                                        behavior: 'smooth'
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
